@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Village Intelligence | CIST, KG Reddy College</title>
+<meta name="description" content="Population, strengths, needs and local updates for seven villages in Moinabad mandal, on a live map.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%237e2da1'/%3E%3Ccircle cx='32' cy='32' r='12' fill='%23f9b827'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="assets/lib/leaflet/leaflet.css">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#fff;--soft:#f6f0fb;--tx:#24113a;--mu:#5f4d78;--pu:#7e2da1;--dp:#3a0f5c;--go:#f19f26;--ln:rgba(58,15,92,.14)}
+*{box-sizing:border-box;margin:0}html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--tx);font:400 1rem/1.6 'DM Sans',system-ui,sans-serif}
+h1,h2,h3{font-family:'Fraunces',Georgia,serif;font-weight:600;line-height:1.12;color:var(--dp)}a{color:var(--pu)}.w{max-width:1240px;margin:0 auto;padding:0 20px}.mu{color:var(--mu)}
+:focus-visible{outline:3px solid var(--pu);outline-offset:3px}
+header{position:sticky;top:0;z-index:1000;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--ln)}
+.nb{display:flex;align-items:center;justify-content:space-between;height:64px}.nb img{height:42px;display:block}.bk{color:var(--mu);text-decoration:none;font-size:.95rem}.bk:hover{color:var(--pu)}
+.hd{padding:36px 0 12px}.hd h1{font-size:clamp(2.2rem,5.5vw,3.8rem)}.hd p{max-width:44rem;margin-top:10px;color:var(--mu)}
+.kp{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:24px 0 8px}.kp div{background:var(--soft);border-radius:16px;padding:18px 14px;text-align:center}.kp b{display:block;font:600 2.3rem 'Fraunces',serif;color:var(--pu)}.kp span{font-size:.84rem;color:var(--mu)}
+.tabs{display:flex;gap:8px;overflow-x:auto;padding:14px 0 16px;scrollbar-width:none}.tabs::-webkit-scrollbar{display:none}.tabs button{flex:0 0 auto;background:#fff;color:var(--tx);border:1.5px solid var(--ln);border-radius:99px;padding:9px 18px;cursor:pointer;font:inherit;transition:.25s}.tabs button.pe{border-style:dashed}.tabs button[aria-selected=true]{background:var(--pu);color:#fff;border-color:var(--pu);transform:translateY(-2px);box-shadow:0 8px 18px rgba(126,45,161,.3)}
+.lay{display:grid;grid-template-columns:1.05fr 1fr;gap:28px;align-items:start;padding-bottom:56px}
+.mp{position:sticky;top:78px;isolation:isolate;border:1px solid var(--ln);border-radius:20px;overflow:hidden;background:#fff}
+#map{height:min(72vh,580px);background:linear-gradient(var(--ln) 1px,transparent 1px) 0 0/48px 48px,linear-gradient(90deg,var(--ln) 1px,transparent 1px) 0 0/48px 48px,#f3ecf9}
+.ctl{display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding:10px 12px;border-top:1px solid var(--ln);font-size:.82rem;color:var(--mu)}.ctl button{background:#fff;border:1px solid var(--ln);border-radius:99px;padding:5px 14px;cursor:pointer;font:inherit;color:var(--tx)}.ctl button[aria-pressed=true]{background:var(--dp);color:#fff;border-color:var(--dp)}.ctl .sp{flex:1}
+#mn{display:none;position:absolute;left:12px;right:12px;top:12px;z-index:900;background:#fff;border:1px solid var(--go);border-radius:10px;padding:8px 12px;font-size:.84rem}
+.mkw{background:none;border:0}.mk{position:relative;width:0;height:0}
+.mk b{position:absolute;left:calc(var(--s)/-2);top:calc(var(--s)/-2);width:var(--s);height:var(--s);border-radius:50%;background:rgba(126,45,161,.62);border:3px solid #fff;box-shadow:0 6px 18px rgba(58,15,92,.4);animation:drop .9s cubic-bezier(.2,1.5,.4,1) both;animation-delay:calc(var(--i)*.2s);transition:background .3s}
+.mk.pe b{background:rgba(241,159,38,.35);border:3px dashed var(--pu)}.mk.on b{background:var(--go)}
+.mk i{position:absolute;left:calc(var(--s)/-2);top:calc(var(--s)/-2);width:var(--s);height:var(--s);border-radius:50%;border:2px solid var(--pu);animation:rp 2.8s ease-out infinite;animation-delay:calc(var(--i)*.4s)}.mk.on i{border-color:var(--go);animation-duration:1.5s}
+.mk span{position:absolute;left:0;top:calc(var(--s)/2 + 6px);transform:translateX(-50%);white-space:nowrap;font:700 12px 'DM Sans',sans-serif;background:#fff;color:var(--dp);padding:2px 9px;border-radius:99px;box-shadow:0 2px 8px rgba(0,0,0,.25)}
+@keyframes drop{from{transform:translateY(-40px) scale(0);opacity:0}}@keyframes rp{from{transform:scale(1);opacity:.8}to{transform:scale(2.3);opacity:0}}
+.dl{animation:dash 1s linear infinite}@keyframes dash{to{stroke-dashoffset:-14}}.dt{background:#fff;color:var(--dp);border:1px solid var(--pu);font-weight:700;border-radius:99px;padding:1px 8px;box-shadow:none}.dt:before{display:none}
+.pn{min-width:0}.bd{display:inline-block;padding:3px 12px;border-radius:99px;font-size:.8rem;font-weight:700;background:var(--pu);color:#fff}.bd.pe{background:none;border:1px dashed var(--mu);color:var(--mu)}
+.pn h2{font-size:clamp(2rem,4vw,3rem);margin:10px 0 4px}.sub{color:var(--mu);font-size:.92rem}.lk{display:inline-block;margin-top:8px;font-size:.88rem}
+.cd{background:#fff;border:1px solid var(--ln);border-radius:18px;padding:20px;margin-top:16px;box-shadow:0 6px 20px rgba(58,15,92,.06)}.cd h3{font-size:1.1rem;margin-bottom:12px}
+.ns{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:20px}.ns div{background:var(--soft);border-radius:14px;padding:14px 8px;text-align:center}.ns b{display:block;font:600 1.6rem 'Fraunces',serif;color:var(--pu)}.ns span{font-size:.76rem;color:var(--mu)}
+.dn2{display:flex;gap:20px;align-items:center;flex-wrap:wrap}.dn{width:150px;height:150px;flex:0 0 auto}.dn circle{transition:stroke-dasharray 1.5s cubic-bezier(.16,1,.3,1)}.dn .dm,.dn .df{stroke-dasharray:0 400}.go .dn .dm{stroke-dasharray:var(--md)}.go .dn .df{stroke-dasharray:var(--fd)}
+.lg2{display:grid;gap:10px;flex:1;min-width:150px}.lg2 b{font:600 1.8rem 'Fraunces',serif}.lg2 .m b{color:var(--pu)}.lg2 .f b{color:var(--go)}.lg2 span{display:block;font-size:.84rem;color:var(--mu)}
+.gg{margin-top:18px}.gg .tr{position:relative;height:12px;border-radius:9px;background:var(--ln)}.gg i{position:absolute;left:0;top:0;bottom:0;border-radius:9px;background:linear-gradient(90deg,var(--pu),var(--go));width:0;transition:width 1.5s cubic-bezier(.16,1,.3,1)}.go .gg i{width:var(--w)}.gg u{position:absolute;top:-5px;bottom:-5px;width:2px;background:var(--dp);left:var(--p)}.gg small{display:flex;justify-content:space-between;font-size:.8rem;color:var(--mu);margin-top:6px}
+.dots{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 10px}.dots svg{width:34px;height:34px;fill:var(--pu);opacity:0}.go .dots svg{animation:pp .5s cubic-bezier(.2,1.6,.4,1) both;animation-delay:calc(var(--k)*.1s)}@keyframes pp{from{transform:scale(0) translateY(10px);opacity:0}to{opacity:1}}
+.rg{position:relative;height:14px;border-radius:9px;background:var(--ln);margin:34px 6px 14px}.rg .fl{position:absolute;top:0;bottom:0;left:var(--a);border-radius:9px;background:linear-gradient(90deg,rgba(126,45,161,.25),var(--pu));width:0;transition:width 1.5s .2s cubic-bezier(.16,1,.3,1)}.go .rg .fl{width:var(--w)}
+.rg em{position:absolute;top:50%;width:16px;height:16px;margin:-8px 0 0 -8px;border-radius:50%;border:3px solid #fff;background:var(--pu);box-shadow:0 2px 8px rgba(0,0,0,.3);left:var(--p);scale:0;transition:scale .6s cubic-bezier(.2,1.6,.4,1) calc(.4s + var(--k)*.2s)}.go .rg em{scale:1}.rg em.c{background:#fff;border-color:var(--pu)}.rg em.b{background:var(--go);width:20px;height:20px;margin:-10px 0 0 -10px}
+.rl{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;text-align:center}.rl b{display:block;font-size:1.05rem}.rl span{font-size:.76rem;color:var(--mu)}
+.gr{font:600 2rem 'Fraunces',serif;color:var(--go)}
+.br{display:grid;grid-template-columns:96px 1fr 62px;gap:10px;align-items:center;width:100%;background:none;border:0;padding:5px 0;font:inherit;color:var(--tx);text-align:left;cursor:pointer}.br .tr{height:12px;border-radius:8px;background:var(--ln);overflow:hidden}.br i{display:block;height:100%;border-radius:8px;background:linear-gradient(90deg,var(--pu),#b36ad6);width:0;transition:width 1.4s cubic-bezier(.16,1,.3,1)}.go .br i{width:var(--w)}.br.on i{background:linear-gradient(90deg,var(--go),#f7cc54)}.br.on span:first-child{font-weight:700}.br:hover i{filter:brightness(1.1)}.br em{font-style:normal;font-size:.84rem;text-align:right;color:var(--mu)}.br.pe i{opacity:.55}
+.tw{display:grid;grid-template-columns:1fr 1fr;gap:16px}.ch{display:flex;flex-wrap:wrap;gap:8px}.ch span{padding:6px 12px;border-radius:10px;background:var(--soft);font-size:.9rem;animation:fi .5s both;animation-delay:calc(var(--k)*.08s)}
+.nl{list-style:none;padding:0;display:grid;gap:8px}.nl li{display:flex;gap:10px;align-items:flex-start;padding:10px;border-radius:12px;background:#fff7ea;border:1px solid rgba(241,159,38,.35);animation:fi .5s both;animation-delay:calc(var(--k)*.1s)}.nl b{flex:0 0 26px;height:26px;border-radius:50%;background:var(--go);color:#fff;display:grid;place-items:center;font-size:.85rem}
+@keyframes fi{from{opacity:0;transform:translateY(10px)}}
+details{border-bottom:1px solid var(--ln);padding:11px 0}summary{cursor:pointer;font-weight:700;list-style:none;display:flex;justify-content:space-between;color:var(--dp)}summary::-webkit-details-marker{display:none}summary:after{content:"+";color:var(--pu);font-size:1.3rem;line-height:1;transition:transform .3s}details[open] summary:after{transform:rotate(45deg)}details p{color:var(--mu);margin-top:8px;animation:fi .4s both}
+.up{list-style:none;padding:0 0 0 4px;position:relative}.up:before{content:"";position:absolute;left:9px;top:6px;bottom:6px;width:2px;background:var(--pu);transform-origin:top;transform:scaleY(0);transition:transform 1.4s}.go .up:before{transform:scaleY(1)}.up li{padding:0 0 16px 28px;position:relative}.up li:before{content:"";position:absolute;left:3px;top:6px;width:14px;height:14px;border-radius:50%;background:var(--go);border:3px solid #fff;box-shadow:0 0 0 2px var(--pu)}.up time{color:var(--pu);font-weight:700;font-size:.85rem}.up p{color:var(--mu);font-size:.94rem}.up small{display:block;color:var(--mu);font-size:.8rem}.up small a{margin-right:10px}
+.nb2{display:flex;gap:12px;align-items:center;color:var(--mu)}.nb2 b{font:600 2rem 'Fraunces',serif;color:var(--go)}
+.rc{padding:56px 0;background:var(--soft)}.rcg{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:22px}.rcg div{padding:18px;background:#fff;border:1px solid var(--ln);border-radius:14px;opacity:0;transform:translateY(24px);transition:.7s}.rcg div.go{opacity:1;transform:none}.rcg b{color:var(--pu);font-size:.8rem}.rcg p{font-size:.92rem;color:var(--mu);margin:6px 0}.rcg small a{margin-right:8px;font-size:.8rem}
+.mt{padding:32px 20px 56px;color:var(--mu);font-size:.9rem;max-width:56rem}.mt h3{margin-bottom:8px}.mt p{margin-bottom:8px}
+@media(max-width:960px){.lay{grid-template-columns:1fr}.mp{position:relative;top:0}#map{height:340px}.rcg{grid-template-columns:1fr}.kp{grid-template-columns:1fr 1fr}.tw{grid-template-columns:1fr}.ns{grid-template-columns:1fr 1fr}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.dots svg{opacity:1!important}.rg em{scale:1!important}.rcg div{opacity:1;transform:none}html{scroll-behavior:auto}}
+.lg{display:flex;align-items:center;gap:10px}.lg img{height:38px;width:auto;display:block}.lg .dv{width:1px;height:26px;background:var(--ln)}@media(max-width:560px){.lg img{height:28px}.lg{gap:8px}.lg .dv{height:20px}}
+</style>
+</head>
+<body>
+<header><div class="w nb"><a class="lg" href="index.html" aria-label="Home"><img src="assets/kgr-logo.png" alt="KG Reddy College of Engineering and Technology"><span class="dv" aria-hidden="true"></span><img src="assets/cist-logo-h.png" alt="CIST: Centre for Innovation and Social Transformation"></a><a class="bk" href="index.html">Back to home</a></div></header>
+<main>
+<div class="w hd"><h1>Village Intelligence</h1><p>Students interviewed farmers, farm labour, skilled workers, elders, children, women and youth in Moinabad mandal. Pick a village to see it on the map and read what they found. Population is from Census 2011, and local updates were checked on 19 November 2026.</p>
+<div class="kp" id="kp"></div><div class="tabs" id="tabs" role="tablist" aria-label="Villages"></div></div>
+<div class="w lay"><div class="mp"><div id="mn" role="status"></div><div id="map" role="application" aria-label="Map of the villages"></div>
+<div class="ctl"><button type="button" id="b1" aria-pressed="true">Map</button><button type="button" id="b2" aria-pressed="false">Satellite</button><button type="button" id="rs">Show all villages</button><span class="sp"></span><span>Pins are approximate reference points. Pin size = Census 2011 population.</span></div></div>
+<article class="pn" id="pn" aria-live="polite"></article></div>
+<section class="rc"><div class="w"><h2 style="font-size:2rem">Around the villages in 2026</h2><p class="mu">District, state and national context. Most news is not specific to these villages.</p><div class="rcg" id="rg"></div></div></section>
+<div class="mt" id="mt"></div>
+</main>
+<script src="assets/lib/leaflet/leaflet.js"></script><script src="assets/lib/gsap.min.js"></script><script src="villages-data.js"></script>
+<script>
+(function(){
+var rm=matchMedia('(prefers-reduced-motion: reduce)').matches,D=CIST.villages,$=function(i){return document.getElementById(i)};
+function e(t){return String(t==null?'':t).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function n0(x){return Number(x).toLocaleString('en-IN')}
+function km(a,b){var R=6371,r=Math.PI/180,dl=(b[1]-a[1])*r,dg=(b[0]-a[0])*r,h=Math.sin(dl/2)*Math.sin(dl/2)+Math.cos(a[1]*r)*Math.cos(b[1]*r)*Math.sin(dg/2)*Math.sin(dg/2);return 2*R*Math.asin(Math.sqrt(h))}
+var T={p:0,m:0,f:0,h:0};D.forEach(function(v){T.p+=v.census2011.population;T.m+=v.census2011.male;T.f+=v.census2011.female;T.h+=v.census2011.households});
+var sv=D.filter(function(v){return v.status!=='pending'}).length;
+/* counters and reveal */
+function run(el){var t=+el.dataset.n,dc=+(el.dataset.dec||0),p=el.dataset.p||'',s=el.dataset.s||'',fm=function(x){return p+(dc?x.toFixed(dc):n0(Math.round(x)))+s};if(rm){el.textContent=fm(t);return}var t0=performance.now();(function f(x){var k=Math.min((x-t0)/1500,1);el.textContent=fm(t*(1-Math.pow(1-k,3)));if(k<1)requestAnimationFrame(f)})(t0)}
+var io='IntersectionObserver'in window?new IntersectionObserver(function(en){en.forEach(function(x){if(!x.isIntersecting)return;io.unobserve(x.target);if(x.target.dataset.n!=null)run(x.target);else x.target.classList.add('go')})},{threshold:.25}):null;
+function watch(root){[].forEach.call(root.querySelectorAll('[data-n],[data-go]'),function(el){if(io)io.observe(el);else if(el.dataset.n!=null)run(el);else el.classList.add('go')})}
+$('kp').innerHTML=[[D.length,'villages on the map',''],[T.p,'people in these villages (Census 2011)',''],[sv,'villages surveyed by students',''],[7,'stakeholder groups heard','']].map(function(k){return'<div><b data-n="'+k[0]+'">0</b><span>'+k[1]+'</span></div>'}).join('');watch($('kp'));
+/* map */
+var G=D.filter(function(v){return v.geo}),ll=function(v){return[v.geo[1],v.geo[0]]},map,bounds,base,sat,mk={},lines=[],mnote=$('mn');
+if(window.L){
+map=L.map('map',{scrollWheelZoom:false,dragging:!L.Browser.mobile,tap:false,zoomSnap:.5});
+base=L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; OpenStreetMap contributors'}).addTo(map);
+sat=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxZoom:19,attribution:'Tiles &copy; Esri'});
+var er=0;[base,sat].forEach(function(t){t.on('tileerror',function(){if(++er>5){mnote.style.display='block';mnote.textContent='Map tiles could not load. Check the internet connection. Village positions are still shown.'}});t.on('tileload',function(){er=0;mnote.style.display='none'})});
+bounds=L.latLngBounds(G.map(ll));map.fitBounds(bounds,{padding:[60,60],animate:false});
+G.forEach(function(v,i){var s=Math.max(26,Math.min(78,Math.sqrt(v.census2011.population)*.9));mk[v.key]=L.marker(ll(v),{icon:L.divIcon({className:'mkw',iconSize:[0,0],html:'<div class="mk'+(v.status==='pending'?' pe':'')+'" style="--s:'+s+'px;--i:'+i+'"><i></i><b></b><span>'+e(v.name)+'</span></div>'}),title:v.name,alt:v.name,keyboard:true}).addTo(map).on('click',function(){pick(v.key)})});
+$('b1').onclick=function(){map.removeLayer(sat);base.addTo(map);$('b1').setAttribute('aria-pressed',true);$('b2').setAttribute('aria-pressed',false)};
+$('b2').onclick=function(){map.removeLayer(base);sat.addTo(map);$('b2').setAttribute('aria-pressed',true);$('b1').setAttribute('aria-pressed',false)};
+}else{mnote.style.display='block';mnote.textContent='The map library did not load.'}
+function fly(v){if(!map)return;if(v&&v.geo){map.flyTo(ll(v),14,{animate:!rm,duration:1.8})}else map.flyToBounds(bounds,{padding:[60,60],animate:!rm,duration:1.6})}
+function drawLines(v){lines.forEach(function(l){map.removeLayer(l)});lines=[];if(!map||!v||!v.geo)return;G.forEach(function(o){if(o.key===v.key)return;var d=km(v.geo,o.geo),l=L.polyline([ll(v),ll(o)],{className:'dl',color:'#7e2da1',weight:2,opacity:.75,dashArray:'6 8'}).addTo(map).bindTooltip(d.toFixed(1)+' km',{permanent:true,direction:'center',className:'dt'});lines.push(l)})}
+$('rs').onclick=function(){pick('all')};
+/* tabs */
+var tabs=$('tabs');[{key:'all',name:'All villages'}].concat(D).forEach(function(v){var b=document.createElement('button');b.type='button';b.setAttribute('role','tab');b.dataset.k=v.key;b.className=v.status==='pending'?'pe':'';b.textContent=v.name;b.onclick=function(){pick(v.key)};tabs.appendChild(b)});
+/* visuals */
+function donut(m,f){var C=2*Math.PI*46,ml=C*m/(m+f),fl=C-ml;return'<svg class="dn" viewBox="0 0 120 120" role="img" aria-label="Male '+(m/(m+f)*100).toFixed(1)+' percent, female '+(f/(m+f)*100).toFixed(1)+' percent" style="--md:'+ml+' '+(C-ml)+';--fd:'+fl+' '+(C-fl)+'"><circle cx="60" cy="60" r="46" fill="none" stroke="#eadcf5" stroke-width="16"/><circle class="dm" cx="60" cy="60" r="46" fill="none" stroke="#7e2da1" stroke-width="16" transform="rotate(-90 60 60)"/><circle class="df" cx="60" cy="60" r="46" fill="none" stroke="#f19f26" stroke-width="16" stroke-dashoffset="'+(-ml)+'" transform="rotate(-90 60 60)"/></svg>'}
+function sexCard(m,f,t){var P=(m/(m+f)*100),F=100-P,sr=Math.round(f/m*1000);return'<div class="cd" data-a data-go><h3>'+t+'</h3><div class="dn2">'+donut(m,f)+'<div class="lg2"><div class="m"><b data-n="'+P.toFixed(1)+'" data-dec="1" data-s="%">0</b><span>male ('+n0(m)+')</span></div><div class="f"><b data-n="'+F.toFixed(1)+'" data-dec="1" data-s="%">0</b><span>female ('+n0(f)+')</span></div></div></div><div class="gg" style="--w:'+Math.min(sr/1200*100,100)+'%;--p:'+(1000/1200*100)+'%"><div class="tr"><i></i><u></u></div><small><span>'+sr+' women per 1,000 men</span><span>1,000 = equal</span></small></div></div>'}
+function bars(sel){var mx=Math.max.apply(0,D.map(function(v){return v.census2011.population})),a=D.slice().sort(function(x,y){return y.census2011.population-x.census2011.population});return'<div class="cd" data-a data-go><h3>Population compared (Census 2011)</h3>'+a.map(function(v){return'<button type="button" class="br'+(v.key===sel?' on':'')+(v.status==='pending'?' pe':'')+'" data-k="'+v.key+'" style="--w:'+(v.census2011.population/mx*100)+'%"><span>'+e(v.name)+'</span><span class="tr"><i></i></span><em>'+n0(v.census2011.population)+'</em></button>'}).join('')+'</div>'}
+function render(v){
+if(!v){return'<span class="bd">Overview</span><h2>All seven villages</h2><p class="sub">Moinabad mandal, Ranga Reddy district, Telangana. Select a village on the map or above.</p><div class="ns" data-a data-go><div><b data-n="'+T.p+'">0</b><span>people (2011)</span></div><div><b data-n="'+T.m+'">0</b><span>male</span></div><div><b data-n="'+T.f+'">0</b><span>female</span></div><div><b data-n="'+T.h+'">0</b><span>households</span></div></div>'+sexCard(T.m,T.f,'Men and women across all seven villages')+bars('')}
+var c=v.census2011,m=v.estimate2026,p=v.status==='pending',av=c.population/c.households,mx=m.high*1.04,gr=Math.round((m.base/c.population-1)*100),H='';
+H+='<div data-a><span class="bd'+(p?' pe':'')+'">'+(p?'Awaiting assessment':'Surveyed by CIST students')+'</span><h2>'+e(v.name)+'</h2><p class="sub">'+e(v.localBody)+'. Chevella (SC) Assembly and Chevella Lok Sabha constituencies.</p>'+(v.geo?'<a class="lk" href="https://www.google.com/maps/search/?api=1&query='+v.geo[1]+','+v.geo[0]+'" target="_blank" rel="noopener">Open this location in Google Maps ('+v.geo[1].toFixed(4)+'° N, '+v.geo[0].toFixed(4)+'° E, approximate)</a>':'<p class="sub">Location not yet confirmed, so it is not pinned on the map.</p>')+'</div>';
+H+='<div class="ns" data-a data-go><div><b data-n="'+c.population+'">0</b><span>people (2011)</span></div><div><b data-n="'+c.male+'">0</b><span>male</span></div><div><b data-n="'+c.female+'">0</b><span>female</span></div><div><b data-n="'+c.households+'">0</b><span>households</span></div></div>';
+H+=sexCard(c.male,c.female,'Men and women');
+H+='<div class="cd" data-a data-go><h3>A typical household</h3><div class="dots">'+Array.apply(0,Array(Math.round(av))).map(function(x,i){return'<svg style="--k:'+i+'" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="7" r="4"/><path d="M4 22c0-5 3.5-8 8-8s8 3 8 8z"/></svg>'}).join('')+'</div><p class="mu"><b data-n="'+av.toFixed(1)+'" data-dec="1">0</b> people per household in 2011</p></div>';
+H+='<div class="cd" data-a data-go><h3>People living here today (approximate)</h3><div class="rg" style="--a:'+(m.low/mx*100)+'%;--w:'+((m.high-m.low)/mx*100)+'%"><span class="fl"></span><em class="c" style="--p:'+(c.population/mx*100)+'%;--k:0"></em><em style="--p:'+(m.low/mx*100)+'%;--k:1"></em><em class="b" style="--p:'+(m.base/mx*100)+'%;--k:2"></em><em style="--p:'+(m.high/mx*100)+'%;--k:3"></em></div><div class="rl"><div><b>'+n0(c.population)+'</b><span>Census 2011</span></div><div><b>'+n0(m.low)+'</b><span>low</span></div><div><b>'+n0(m.base)+'</b><span>base</span></div><div><b>'+n0(m.high)+'</b><span>high</span></div></div><p class="mu" style="margin-top:12px;font-size:.88rem">Estimated growth since 2011 in the base case: <span class="gr" data-n="'+gr+'" data-p="+" data-s="%">0</span>. These figures are approximate, not a census.</p></div>';
+H+=bars(v.key);
+if(v.geo){var nb=G.filter(function(o){return o.key!==v.key}).map(function(o){return{n:o.name,d:km(v.geo,o.geo)}}).sort(function(a,b){return a.d-b.d}),mxd=Math.max.apply(0,nb.map(function(o){return o.d}));H+='<div class="cd" data-a data-go><h3>Distance to the other villages (straight line)</h3>'+nb.map(function(o){return'<div class="br" style="cursor:default;--w:'+(o.d/mxd*100)+'%"><span>'+e(o.n)+'</span><span class="tr"><i></i></span><em>'+o.d.toFixed(1)+' km</em></div>'}).join('')+'</div>'}
+if(v.strengths.length||v.needs.length)H+='<div class="cd tw" data-a><div><h3>Strengths named</h3><div class="ch">'+v.strengths.map(function(s,i){return'<span style="--k:'+i+'">'+e(s)+'</span>'}).join('')+'</div></div><div><h3>What they need</h3><ol class="nl">'+v.needs.map(function(s,i){return'<li style="--k:'+i+'"><b>'+(i+1)+'</b><span>'+e(s)+'</span></li>'}).join('')+'</ol></div></div>';
+H+='<div class="cd" data-a><h3>What villagers told us</h3>'+(v.topics.length?v.topics.map(function(t,j){return'<details'+(j<1?' open':'')+'><summary>'+e(t.title)+'</summary><p>'+e(t.text)+'</p></details>'}).join(''):'<p class="mu">Students have not yet surveyed this village.</p>')+'</div>';
+H+='<div class="cd" data-a data-go><h3>Latest local information</h3>'+(v.updates.length?'<ol class="up">'+v.updates.map(function(u){return'<li><time>'+e(u.date)+'</time><p>'+e(u.text)+'</p><small>'+(u.source||[]).map(function(s){try{return'<a href="'+e(s)+'" rel="noopener" target="_blank">'+e(new URL(s).hostname.replace('www.',''))+'</a>'}catch(x){return''}}).join('')+e(u.verification)+'</small></li>'}).join('')+'</ol>':'<p class="mu">'+e(v.updatesNote)+'</p>')+'</div>';
+var pj=v.projects||[];H+='<div class="cd" data-a><h3>Projects done in this village</h3>'+(pj.length?'<ul class="nl">'+pj.map(function(x,i){return'<li style="--k:'+i+'"><b>'+(i+1)+'</b><span>'+e(x)+'</span></li>'}).join('')+'</ul>':'<div class="nb2"><b>0</b><span>Project records for '+e(v.name)+' are being compiled by the CIST team.</span></div>')+'</div>';
+if(v.nextSurveyQuestions.length)H+='<div class="cd" data-a><h3>To ask on the next visit</h3><details><summary>'+v.nextSurveyQuestions.length+' questions</summary>'+v.nextSurveyQuestions.map(function(q){return'<p>'+e(q)+'</p>'}).join('')+'</details></div>';
+return H}
+var pn=$('pn');
+function pick(k){var v=k==='all'?null:D.filter(function(z){return z.key===k})[0];
+[].forEach.call(tabs.children,function(b){b.setAttribute('aria-selected',b.dataset.k===k)});
+Object.keys(mk).forEach(function(q){var el=mk[q].getElement();if(el)el.firstChild.classList.toggle('on',q===k)});
+if(map){drawLines(v);fly(v)}
+pn.innerHTML=render(v);
+[].forEach.call(pn.querySelectorAll('.br[data-k]'),function(b){b.onclick=function(){pick(b.dataset.k)}});
+watch(pn);
+if(window.gsap&&!rm)gsap.from(pn.querySelectorAll('[data-a]'),{y:28,opacity:0,duration:.7,stagger:.07,ease:'power3.out',clearProps:'all'});
+if(window.innerWidth<960&&k!=='all')$('map').scrollIntoView({behavior:rm?'auto':'smooth',block:'nearest'})}
+$('rg').innerHTML=CIST.regionalContext.map(function(c){return'<div data-go><b>'+e(c.scope[0].toUpperCase()+c.scope.slice(1))+' · '+e(c.date)+'</b><p>'+e(c.text)+'</p><small>'+c.source.map(function(s){try{return'<a href="'+e(s)+'" rel="noopener" target="_blank">'+e(new URL(s).hostname.replace('www.',''))+'</a>'}catch(x){return''}}).join('')+'</small></div>'}).join('');watch($('rg'));
+var M=CIST.methodology;$('mt').innerHTML='<h3>How this was put together</h3><p>'+e(M.surveyText)+'</p><p>'+e(M.estimates)+'</p><p>'+e(M.updates)+'</p><p>'+e(M.limits)+'</p>';
+pick('all');
+})();
+</script>
+</body>
+</html>

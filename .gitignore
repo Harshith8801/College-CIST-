@@ -1,0 +1,4 @@
+server/data/secret.key
+server/data/backups/
+server/data/audit.log
+node_modules/
